@@ -1,0 +1,9 @@
+target/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# The interviewer guide contains the private rubric and must not be pushed.
+interviewer-guide.md
