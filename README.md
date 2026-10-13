@@ -1,4 +1,4 @@
-# Tech Lead - Technical Exercise
+# Technical Exercise
 
 **Duration:** 30 minutes total, including code review, implementation, and discussion.
 
