@@ -1,25 +1,28 @@
 package com.example.checkout.payment;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Component("gopay")
 public class GopayPaymentStrategy implements PaymentStrategy {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    // Exercise fake: do not call the real provider from local tests or interview code.
+    private final ConcurrentMap<String, PaymentResult> fakeProviderTransactions = new ConcurrentHashMap<>();
 
     @Override
-    public boolean pay(String phoneNumber, double amount) {
-        String url = "https://www.gopay.com/user/" + phoneNumber + "/pay";
-        try {
-            Map<String, Object> body = Map.of("amount", amount);
-            ResponseEntity<String> response = restTemplate.postForEntity(url, body, String.class);
-            return response.getStatusCode().is2xxSuccessful();
-        } catch (Exception exception) {
-            return false;
-        }
+    public PaymentResult pay(PaymentRequest request) {
+        PaymentResult result = PaymentResult.captured("gopay-" + request.getMerchantReference());
+        fakeProviderTransactions.put(request.getMerchantReference(), result);
+        return result;
+    }
+
+    @Override
+    public PaymentResult findByMerchantReference(String merchantReference) {
+        return fakeProviderTransactions.getOrDefault(
+                merchantReference,
+                PaymentResult.unknown("Provider has no final status for this merchant reference yet")
+        );
     }
 }
