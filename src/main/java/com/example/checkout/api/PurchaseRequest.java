@@ -7,6 +7,8 @@ public class PurchaseRequest {
     private String userId;
     private List<ItemLine> items;
     private String paymentMethod;
+    // Required so mobile retries do not create a second charge for the same purchase.
+    private String idempotencyKey;
 
     public String getUserId() {
         return userId;
@@ -30,6 +32,14 @@ public class PurchaseRequest {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
     }
 
     public static class ItemLine {
